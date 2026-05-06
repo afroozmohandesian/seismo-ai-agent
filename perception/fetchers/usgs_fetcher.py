@@ -1,5 +1,6 @@
 import requests
 
+from shared.retry import retry
 from perception.models.event import SeismicEvent
 
 
@@ -12,11 +13,18 @@ class USGSFetcher:
 
     def fetch_events(self) -> list[SeismicEvent]:
 
-        response = requests.get(USGS_API_URL, timeout=10)
+        def request():
 
-        response.raise_for_status()
+            response = requests.get(
+                USGS_API_URL,
+                timeout=10,
+            )
 
-        payload = response.json()
+            response.raise_for_status()
+
+            return response.json()
+
+        payload = retry(request)
 
         events = []
 
@@ -51,6 +59,7 @@ class USGSFetcher:
                 events.append(event)
 
             except Exception as exc:
+
                 print(f"Failed to parse event: {exc}")
 
         return events
