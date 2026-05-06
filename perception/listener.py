@@ -1,6 +1,7 @@
 from perception.fetchers.usgs_fetcher import USGSFetcher
 from perception.fetchers.emsc_fetcher import EMSCFetcher
 from perception.storage.sqlite_store import SQLiteStore
+from shared.logger import logger
 
 class SeismicListener:
 
@@ -16,7 +17,9 @@ class SeismicListener:
 
         try:
 
-            print("Fetching from USGS...")
+            logger.info(
+                "Fetching events from USGS"
+            )
 
             events = self.primary_fetcher.fetch_events()
 
@@ -26,9 +29,9 @@ class SeismicListener:
 
         except Exception as exc:
 
-            print(f"USGS failed: {exc}")
+            logger.error(f"USGS failed: {exc}")
 
-            print("Switching to EMSC fallback...")
+            logger.warning("Switching to EMSC fallback")
 
             events = self.fallback_fetcher.fetch_events()
 

@@ -1,6 +1,7 @@
 import sqlite3
 
 from perception.models.event import SeismicEvent
+from shared.logger import logger
 
 
 class SQLiteStore:
@@ -66,11 +67,13 @@ class SQLiteStore:
 
             self.connection.commit()
 
-            print(f"Stored event {event.eid}")
+            logger.info(
+                f"Stored event {event.eid}"
+            )
 
         except sqlite3.IntegrityError:
 
-            print(
+            logger.warning(
                 f"Duplicate event skipped: "
                 f"{event.eid}"
             )

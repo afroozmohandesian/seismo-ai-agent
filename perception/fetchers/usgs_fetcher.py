@@ -5,6 +5,8 @@ from perception.models.event import SeismicEvent
 
 from shared.sync_state import SyncStateManager
 
+from shared.logger import logger
+
 
 USGS_API_URL = (
     "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson"
@@ -77,7 +79,7 @@ class USGSFetcher:
 
             except Exception as exc:
 
-                print(f"Failed to parse event: {exc}")
+                logger.warning(f"Failed to parse USGS event: {exc}")
         
         state_manager.save_last_event_time(
             latest_seen_time
