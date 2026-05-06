@@ -2,6 +2,9 @@ import sqlite3
 
 from perception.models.event import SeismicEvent
 from shared.logger import logger
+from perception.deduplication import (
+    are_potential_duplicates,
+)
 
 
 class SQLiteStore:
@@ -37,9 +40,64 @@ class SQLiteStore:
 
         self.connection.commit()
 
+    def fetch_existing_events(self):
+
+        cursor = self.connection.cursor()
+
+        rows = cursor.execute(
+            """
+            SELECT
+                eid,
+                timestamp,
+                lat,
+                lon,
+                depth,
+                Mw
+            FROM events
+            """
+        ).fetchall()
+
+        events = []
+
+        for row in rows:
+
+            event = SeismicEvent(
+                eid=row[0],
+                timestamp=row[1],
+                lat=row[2],
+                lon=row[3],
+                depth=row[4],
+                Mw=row[5],
+                dist=0.0,
+                azi=0.0,
+                loclat=row[2],
+                loclon=row[3],
+            )
+
+            events.append(event)
+
+        return events
+
     def save_event(self, event: SeismicEvent):
 
         cursor = self.connection.cursor()
+        
+        existing_events = (
+            self.fetch_existing_events()
+        )
+
+        for existing_event in existing_events:
+
+            if are_potential_duplicates(
+                event,
+                existing_event,
+            ):
+
+                logger.warning(
+                    "Scientific duplicate detected"
+                )
+
+                return
 
         try:
 
