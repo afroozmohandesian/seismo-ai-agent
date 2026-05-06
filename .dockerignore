@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+
+.git/
+.venv/
+
+seismo_ai.log
+seismic_events.db
+
+docs/
