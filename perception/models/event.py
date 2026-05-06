@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 
 
 class SeismicEvent(BaseModel):
-    eid: int
+    eid: str
     timestamp: datetime
 
     lat: float = Field(..., ge=-90, le=90)

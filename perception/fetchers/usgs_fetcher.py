@@ -38,7 +38,7 @@ class USGSFetcher:
             try:
 
                 event = SeismicEvent(
-                    eid=hash(feature["id"]),
+                    eid=str(feature["id"]),
 
                     timestamp=properties["time"],
 

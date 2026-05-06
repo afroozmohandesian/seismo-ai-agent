@@ -1,6 +1,6 @@
 from perception.fetchers.usgs_fetcher import USGSFetcher
 from perception.fetchers.emsc_fetcher import EMSCFetcher
-
+from perception.storage.sqlite_store import SQLiteStore
 
 class SeismicListener:
 
@@ -10,13 +10,19 @@ class SeismicListener:
 
         self.fallback_fetcher = EMSCFetcher()
 
+        self.store = SQLiteStore()
+
     def fetch_events(self):
 
         try:
 
             print("Fetching from USGS...")
 
-            return self.primary_fetcher.fetch_events()
+            events = self.primary_fetcher.fetch_events()
+
+            for event in events:
+                self.store.save_event(event)
+            return events
 
         except Exception as exc:
 
@@ -24,4 +30,9 @@ class SeismicListener:
 
             print("Switching to EMSC fallback...")
 
-            return self.fallback_fetcher.fetch_events()
+            events = self.fallback_fetcher.fetch_events()
+
+            for event in events:
+                self.store.save_event(event)
+            
+            return events   
