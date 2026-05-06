@@ -11,8 +11,10 @@ class SQLiteStore:
 
     def __init__(self, db_path: str = "seismic_events.db"):
 
-        self.connection = sqlite3.connect(db_path)
-
+        self.connection = sqlite3.connect(
+            db_path,
+            check_same_thread=False,
+        )
         self.create_table()
 
     def create_table(self):
