@@ -38,6 +38,14 @@ queries = [
     "Find volcanic tremor activity combined with seismic monitoring",
 
     "Show coastal hazard monitoring near Morocco",
+
+    "Show reports mentioning USGS",
+
+    "Find EMSC seismic alerts",
+
+    "Retrieve offshore earthquake activity",
+
+    "Find tsunami hazard reports",
 ]
 
 

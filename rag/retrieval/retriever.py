@@ -16,6 +16,7 @@ class Retriever:
     ):
 
         self.embedder = embedder
+
         self.vector_store = vector_store
 
     def retrieve(
@@ -23,16 +24,31 @@ class Retriever:
         query,
         top_k=5,
         filters=None,
+        initial_results=None,
     ):
+
+        # -------------------------
+        # Query embedding
+        # -------------------------
 
         query_embedding = self.embedder.embed(
             [query]
         )[0]
 
-        results = self.vector_store.search(
-            query_embedding,
-            top_k=top_k,
-        )
+        # -------------------------
+        # Retrieval
+        # -------------------------
+
+        if initial_results is not None:
+
+            results = initial_results
+
+        else:
+
+            results = self.vector_store.search(
+                query_embedding,
+                top_k=top_k,
+            )
 
         # -------------------------
         # Retrieval deduplication
@@ -48,7 +64,9 @@ class Retriever:
 
             if text not in seen_texts:
 
-                unique_results.append(result)
+                unique_results.append(
+                    result
+                )
 
                 seen_texts.add(text)
 

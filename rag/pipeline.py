@@ -22,6 +22,10 @@ from rag.filtering.metadata_enricher import (
     MetadataEnricher,
 )
 
+from rag.retrieval.hybrid_retriever import (
+    HybridRetriever,
+)
+
 
 class RAGPipeline:
 
@@ -36,6 +40,8 @@ class RAGPipeline:
         self.vector_store = None
 
         self.retriever = None
+
+        self.hybrid_retriever = None
 
     def ingest(self, path):
 
@@ -71,6 +77,16 @@ class RAGPipeline:
             metadata,
         )
 
+        self.hybrid_retriever = (
+            HybridRetriever(
+                self.vector_store,
+            )
+        )
+
+        self.hybrid_retriever.fit(
+            metadata
+        )
+
         self.retriever = Retriever(
             self.embedder,
             self.vector_store,
@@ -83,8 +99,23 @@ class RAGPipeline:
         top_k=5,
     ):
 
+        query_embedding = (
+            self.embedder.embed(
+                [query]
+            )[0]
+        )
+
+        results = (
+            self.hybrid_retriever.retrieve(
+                query_embedding=query_embedding,
+                query_text=query,
+                top_k=top_k,
+            )
+        )
+
         return self.retriever.retrieve(
             query=query,
             top_k=top_k,
             filters=filters,
+            initial_results=results,
         )
