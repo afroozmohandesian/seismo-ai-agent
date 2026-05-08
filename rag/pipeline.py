@@ -25,7 +25,9 @@ from rag.filtering.metadata_enricher import (
 from rag.retrieval.hybrid_retriever import (
     HybridRetriever,
 )
-
+from rag.retrieval.query_expander import (
+    QueryExpander,
+)
 
 class RAGPipeline:
 
@@ -99,16 +101,25 @@ class RAGPipeline:
         top_k=5,
     ):
 
+        expanded_query = (
+            QueryExpander.expand(
+                query
+            )
+        )
+
+        print("\nExpanded Query:")
+        print(expanded_query)
+
         query_embedding = (
             self.embedder.embed(
-                [query]
+                [expanded_query]
             )[0]
         )
 
         results = (
             self.hybrid_retriever.retrieve(
                 query_embedding=query_embedding,
-                query_text=query,
+                query_text=expanded_query,
                 top_k=top_k,
             )
         )
