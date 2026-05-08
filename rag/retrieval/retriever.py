@@ -29,7 +29,21 @@ class Retriever:
             query_embedding,
             top_k=top_k,
         )
+        unique_results = []
 
+        seen_texts = set()
+
+        for result in results:
+
+            text = result["text"]
+
+            if text not in seen_texts:
+
+                unique_results.append(result)
+
+                seen_texts.add(text)
+
+        results = unique_results
         if filters:
             results = MetadataFilter.apply(
                 results,

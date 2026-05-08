@@ -56,10 +56,42 @@ for query in queries:
         top_k=3,
     )
 
-    for idx, result in enumerate(results, start=1):
+    for idx, result in enumerate(
+        results,
+        start=1,
+    ):
 
         print(f"\nResult {idx}:")
 
         print(result["text"][:300])
 
         print("-" * 60)
+
+
+# -----------------------------
+# Metadata Filtering Demo
+# -----------------------------
+
+print("\n")
+print("=" * 80)
+print("METADATA FILTERING DEMO")
+print("=" * 80)
+
+filtered_results = pipeline.query(
+    query="marine seismic activity",
+    top_k=20,
+    filters={
+        "category": "marine",
+    }
+)
+
+for idx, result in enumerate(
+    filtered_results,
+    start=1,
+):
+
+    print(f"\nFiltered Result {idx}:")
+
+    print(result)
+
+    print("-" * 60)

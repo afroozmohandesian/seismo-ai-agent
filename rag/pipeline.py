@@ -18,6 +18,10 @@ from rag.retrieval.retriever import (
     Retriever,
 )
 
+from rag.filtering.metadata_enricher import (
+    MetadataEnricher,
+)
+
 
 class RAGPipeline:
 
@@ -55,13 +59,12 @@ class RAGPipeline:
 
         for chunk in chunks:
 
-            metadata.append(
-                {
-                    "text": chunk,
-                    "source": path,
-                    "category": "seismic",
-                }
-            )
+           enriched_metadata = (
+                MetadataEnricher.enrich(chunk)
+                )
+           metadata.append(
+               enriched_metadata
+               )
 
         self.vector_store.add(
             embeddings,
