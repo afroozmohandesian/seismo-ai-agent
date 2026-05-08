@@ -25,6 +25,11 @@ from rag.filtering.metadata_enricher import (
 from rag.retrieval.hybrid_retriever import (
     HybridRetriever,
 )
+
+from rag.retrieval.bm25_retriever import (
+    BM25Retriever,
+)
+
 from rag.retrieval.query_expander import (
     QueryExpander,
 )
@@ -32,6 +37,7 @@ from rag.retrieval.query_expander import (
 from rag.generation.answer_generator import (
     AnswerGenerator,
 )
+
 
 class RAGPipeline:
 
@@ -49,39 +55,92 @@ class RAGPipeline:
 
         self.hybrid_retriever = None
 
+        self.bm25_retriever = None
+
+        self.documents = None
+
     def ingest(self, path):
 
+        # -------------------------
+        # Load document
+        # -------------------------
+
         document = self.loader.load(path)
+
+        # -------------------------
+        # Chunking
+        # -------------------------
 
         chunks = self.chunker.chunk(
             document["content"]
         )
 
+        # -------------------------
+        # Embeddings
+        # -------------------------
+
         embeddings = self.embedder.embed(
             chunks
         )
 
-        dimension = len(embeddings[0])
+        dimension = len(
+            embeddings[0]
+        )
+
+        # -------------------------
+        # Vector Store
+        # -------------------------
 
         self.vector_store = FAISSStore(
             dimension
         )
 
+        # -------------------------
+        # Metadata enrichment
+        # -------------------------
+
         metadata = []
 
         for chunk in chunks:
 
-           enriched_metadata = (
-                MetadataEnricher.enrich(chunk)
+            enriched_metadata = (
+                MetadataEnricher.enrich(
+                    chunk
                 )
-           metadata.append(
-               enriched_metadata
-               )
+            )
+
+            metadata.append(
+                enriched_metadata
+            )
+
+        # -------------------------
+        # Store embeddings
+        # -------------------------
 
         self.vector_store.add(
             embeddings,
             metadata,
         )
+
+        # -------------------------
+        # Store documents
+        # -------------------------
+
+        self.documents = metadata
+
+        # -------------------------
+        # BM25 Retriever
+        # -------------------------
+
+        self.bm25_retriever = (
+            BM25Retriever(
+                self.documents
+            )
+        )
+
+        # -------------------------
+        # Hybrid Retriever
+        # -------------------------
 
         self.hybrid_retriever = (
             HybridRetriever(
@@ -93,9 +152,14 @@ class RAGPipeline:
             metadata
         )
 
+        # -------------------------
+        # Main Retriever
+        # -------------------------
+
         self.retriever = Retriever(
-            self.embedder,
-            self.vector_store,
+            embedder=self.embedder,
+            vector_store=self.vector_store,
+            bm25_retriever=self.bm25_retriever,
         )
 
     def query(
@@ -104,6 +168,10 @@ class RAGPipeline:
         filters=None,
         top_k=5,
     ):
+
+        # -------------------------
+        # Query Expansion
+        # -------------------------
 
         expanded_query = (
             QueryExpander.expand(
@@ -114,27 +182,21 @@ class RAGPipeline:
         print("\nExpanded Query:")
         print(expanded_query)
 
-        query_embedding = (
-            self.embedder.embed(
-                [expanded_query]
-            )[0]
-        )
-
-        results = (
-            self.hybrid_retriever.retrieve(
-                query_embedding=query_embedding,
-                query_text=expanded_query,
-                top_k=top_k,
-            )
-        )
+        # -------------------------
+        # Hybrid Retrieval
+        # -------------------------
 
         retrieved_results = (
             self.retriever.retrieve(
-                query=query,
+                query=expanded_query,
                 top_k=top_k,
                 filters=filters,
             )
         )
+
+        # -------------------------
+        # Answer Generation
+        # -------------------------
 
         generated_answer = (
             AnswerGenerator.generate(
