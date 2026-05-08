@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 
 
-class BaseLoader(ABC):
+class BaseEmbedder(ABC):
 
     @abstractmethod
-    def load(self, path: str):
+    def embed(self, texts):
         pass

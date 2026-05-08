@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 
 
-class BaseLoader(ABC):
+class BaseChunker(ABC):
 
     @abstractmethod
-    def load(self, path: str):
+    def chunk(self, data):
         pass
