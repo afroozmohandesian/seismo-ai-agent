@@ -2,6 +2,10 @@ from rag.filtering.metadata_filter import (
     MetadataFilter,
 )
 
+from rag.retrieval.completeness import (
+    RetrievalCompleteness,
+)
+
 
 class Retriever:
 
@@ -29,6 +33,11 @@ class Retriever:
             query_embedding,
             top_k=top_k,
         )
+
+        # -------------------------
+        # Retrieval deduplication
+        # -------------------------
+
         unique_results = []
 
         seen_texts = set()
@@ -44,10 +53,30 @@ class Retriever:
                 seen_texts.add(text)
 
         results = unique_results
+
+        # -------------------------
+        # Metadata filtering
+        # -------------------------
+
         if filters:
+
             results = MetadataFilter.apply(
                 results,
                 filters,
             )
+
+        # -------------------------
+        # Completeness scoring
+        # -------------------------
+
+        completeness_score = (
+            RetrievalCompleteness.score(
+                query,
+                results,
+            )
+        )
+
+        print("\nRetrieval Completeness Score:")
+        print(completeness_score)
 
         return results
