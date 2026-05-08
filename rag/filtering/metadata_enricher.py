@@ -14,34 +14,89 @@ class MetadataEnricher:
     ]
 
     CATEGORY_KEYWORDS = {
+
+        # -------------------------
+        # Marine hierarchy
+        # -------------------------
+
         "marine": [
             "marine",
-            "underwater",
-            "offshore",
+        ],
+
+        "tsunami": [
             "tsunami",
         ],
 
+        "offshore": [
+            "offshore",
+        ],
+
+        "underwater": [
+            "underwater",
+        ],
+
+        # -------------------------
+        # Volcanic hierarchy
+        # -------------------------
+
         "volcanic": [
             "volcanic",
+        ],
+
+        "magma": [
             "magma",
+        ],
+
+        "tremor": [
             "tremor",
         ],
 
-        "aftershock": [
-            "aftershock",
+        # -------------------------
+        # Seismic hierarchy
+        # -------------------------
+
+        "seismic": [
+            "seismic",
         ],
+
+        "earthquake": [
+            "earthquake",
+        ],
+
+        "tectonic": [
+            "tectonic",
+        ],
+
+        "microseismic": [
+            "microseismic",
+        ],
+
+        # -------------------------
+        # Soil hierarchy
+        # -------------------------
 
         "soil": [
             "soil",
+        ],
+
+        "groundwater": [
             "groundwater",
+        ],
+
+        "rainfall": [
             "rainfall",
+        ],
+
+        "saturation": [
             "saturation",
         ],
 
-        "seismic": [
-            "earthquake",
-            "tectonic",
-            "seismic",
+        # -------------------------
+        # Aftershock hierarchy
+        # -------------------------
+
+        "aftershock": [
+            "aftershock",
         ],
     }
 
@@ -93,6 +148,7 @@ class MetadataEnricher:
 
             if matched:
                 break
+
         # -------------------------
         # Source detection
         # -------------------------

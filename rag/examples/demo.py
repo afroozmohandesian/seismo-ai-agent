@@ -95,3 +95,27 @@ for idx, result in enumerate(
     print(result)
 
     print("-" * 60)
+
+print("\n")
+print("=" * 80)
+print("HIERARCHICAL FILTERING DEMO")
+print("=" * 80)
+
+hierarchical_results = pipeline.query(
+    query="tsunami activity",
+    top_k=10,
+    filters={
+        "category": "marine",
+    }
+)
+
+for idx, result in enumerate(
+    hierarchical_results,
+    start=1,
+):
+
+    print(f"\nHierarchical Result {idx}:")
+
+    print(result)
+
+    print("-" * 60)
