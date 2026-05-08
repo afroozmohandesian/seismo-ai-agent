@@ -29,6 +29,10 @@ from rag.retrieval.query_expander import (
     QueryExpander,
 )
 
+from rag.generation.answer_generator import (
+    AnswerGenerator,
+)
+
 class RAGPipeline:
 
     def __init__(self):
@@ -124,9 +128,22 @@ class RAGPipeline:
             )
         )
 
-        return self.retriever.retrieve(
-            query=query,
-            top_k=top_k,
-            filters=filters,
-            initial_results=results,
+        retrieved_results = (
+            self.retriever.retrieve(
+                query=query,
+                top_k=top_k,
+                filters=filters,
+            )
         )
+
+        generated_answer = (
+            AnswerGenerator.generate(
+                query=query,
+                retrieved_results=retrieved_results,
+            )
+        )
+
+        return {
+            "answer": generated_answer,
+            "results": retrieved_results,
+        }

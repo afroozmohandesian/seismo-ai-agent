@@ -6,52 +6,74 @@ from rag.filtering.hierarchical_filter import (
 class MetadataFilter:
 
     @staticmethod
-    def apply(results, filters):
+    def apply(
+        results,
+        filters,
+    ):
 
         filtered_results = []
 
         for result in results:
 
-            match = True
+            matched = True
 
             for key, value in filters.items():
 
-                # -------------------------
-                # Hierarchical category
-                # -------------------------
+                result_value = result.get(key)
+
+                # ---------------------------------
+                # Hierarchical category filtering
+                # ---------------------------------
 
                 if key == "category":
 
-                    allowed_categories = (
-                        HierarchicalFilter.expand_category(
-                            value
+                    expanded_categories = []
+
+                    # Support both string and list
+                    if isinstance(value, list):
+
+                        for item in value:
+
+                            expanded_categories.extend(
+                                HierarchicalFilter.expand_category(
+                                    item
+                                )
+                            )
+
+                    else:
+
+                        expanded_categories = (
+                            HierarchicalFilter.expand_category(
+                                value
+                            )
                         )
-                    )
 
-                    result_category = result.get(
-                        "category"
-                    )
+                    if result_value not in expanded_categories:
 
-                    if (
-                        result_category
-                        not in allowed_categories
-                    ):
-
-                        match = False
+                        matched = False
                         break
 
-                # -------------------------
-                # Standard filtering
-                # -------------------------
+                # ---------------------------------
+                # Generic filtering
+                # ---------------------------------
 
                 else:
 
-                    if result.get(key) != value:
+                    if isinstance(value, list):
 
-                        match = False
-                        break
+                        if result_value not in value:
 
-            if match:
+                            matched = False
+                            break
+
+                    else:
+
+                        if result_value != value:
+
+                            matched = False
+                            break
+
+            if matched:
 
                 filtered_results.append(result)
 

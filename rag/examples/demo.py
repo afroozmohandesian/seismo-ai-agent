@@ -59,10 +59,15 @@ for query in queries:
     print(f"QUERY: {query}")
     print("=" * 80)
 
-    results = pipeline.query(
+    response = pipeline.query(
         query=query,
         top_k=3,
     )
+
+    results = response["results"]
+
+    print("\nGenerated Answer:")
+    print(response["answer"])
 
     for idx, result in enumerate(
         results,
@@ -85,12 +90,19 @@ print("=" * 80)
 print("METADATA FILTERING DEMO")
 print("=" * 80)
 
-filtered_results = pipeline.query(
+filtered_response = pipeline.query(
     query="marine seismic activity",
     top_k=20,
     filters={
         "category": "marine",
     }
+)
+
+print("\nGenerated Answer:")
+print(filtered_response["answer"])
+
+filtered_results = (
+    filtered_response["results"]
 )
 
 for idx, result in enumerate(
@@ -104,17 +116,38 @@ for idx, result in enumerate(
 
     print("-" * 60)
 
+
+# -----------------------------
+# Hierarchical Filtering Demo
+# -----------------------------
+
 print("\n")
 print("=" * 80)
 print("HIERARCHICAL FILTERING DEMO")
 print("=" * 80)
 
-hierarchical_results = pipeline.query(
+hierarchical_response = pipeline.query(
     query="tsunami activity",
     top_k=10,
     filters={
-        "category": "marine",
+        "category": [
+            "marine",
+            "tsunami",
+            "offshore",
+        ],
+        "region": [
+            "Greece",
+            "Sicily",
+            "Turkey",
+        ],
     }
+)
+
+print("\nGenerated Answer:")
+print(hierarchical_response["answer"])
+
+hierarchical_results = (
+    hierarchical_response["results"]
 )
 
 for idx, result in enumerate(
