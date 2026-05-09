@@ -2,22 +2,17 @@ from belief.storage.tensor_store import (
     TensorStore,
 )
 
-from belief.updates.kalman_update import (
-    KalmanUpdater,
+from belief.belief_manager import (
+    BeliefManager,
 )
 
-from belief.updates.bayesian_update import (
-    BayesianUpdater,
+from belief.storage.memory_mapped_store import (
+    MemoryMappedBeliefStore,
 )
 
-from belief.updates.saturation_update import (
-    SaturationUpdater,
+from belief.updates.region_updater import (
+    RegionUpdater,
 )
-
-from belief.tracking.reliability_tracker import (
-    ReliabilityTracker,
-)
-
 
 # --------------------------------------------------
 # Initialize tensor storage
@@ -28,7 +23,15 @@ store = TensorStore(
 )
 
 # --------------------------------------------------
-# Initial belief state
+# Initialize belief manager
+# --------------------------------------------------
+
+manager = BeliefManager(
+    store=store
+)
+
+# --------------------------------------------------
+# Initial state
 # --------------------------------------------------
 
 prior_mean = 2.5
@@ -37,113 +40,90 @@ prior_variance = 0.4
 
 soil_saturation = 0.7
 
-print("\nInitial Belief State")
-print("-" * 50)
-
-print(f"Initial Vs mean: {prior_mean}")
-print(f"Initial uncertainty: {prior_variance}")
-
-# --------------------------------------------------
-# Kalman prediction
-# --------------------------------------------------
-
-predicted_mean, predicted_variance = (
-    KalmanUpdater.predict(
-        current_mean=prior_mean,
-        current_variance=prior_variance,
-        process_noise=0.1,
-    )
-)
-
-print("\nPredicted State")
-print("-" * 50)
-
-print(f"Predicted mean: {predicted_mean}")
-print(
-    f"Predicted variance: {predicted_variance}"
-)
-
-# --------------------------------------------------
-# New observation
-# --------------------------------------------------
-
 observation = 2.9
 
 observation_variance = 0.2
 
-print("\nIncoming Observation")
+print("\nProcessing Observation")
 print("-" * 50)
 
-print(f"Observed Vs: {observation}")
-
-# --------------------------------------------------
-# Bayesian update
-# --------------------------------------------------
-
-posterior_mean, posterior_variance = (
-    BayesianUpdater.update(
-        prior_mean=predicted_mean,
-        prior_variance=predicted_variance,
-        observation=observation,
-        observation_variance=observation_variance,
-    )
-)
-
-print("\nPosterior Belief State")
-print("-" * 50)
-
-print(f"Updated mean: {posterior_mean}")
-
-print(
-    f"Updated variance: {posterior_variance}"
-)
-
-# --------------------------------------------------
-# Soil saturation adjustment
-# --------------------------------------------------
-
-adjusted_vs = (
-    SaturationUpdater.apply(
-        base_vs=posterior_mean,
-        soil_saturation=soil_saturation,
-    )
-)
-
-print("\nSoil Saturation Adjustment")
-print("-" * 50)
-
-print(f"Adjusted Vs: {adjusted_vs}")
-
-# --------------------------------------------------
-# Reliability tracking
-# --------------------------------------------------
-
-confidence = (
-    ReliabilityTracker.compute_confidence(
-        posterior_variance
-    )
-)
-
-print("\nBelief Reliability")
-print("-" * 50)
-
-print(f"Confidence: {confidence}")
-
-# --------------------------------------------------
-# Store final belief state
-# --------------------------------------------------
-
-store.update_cell(
+result = manager.process_observation(
     index=(1, 2, 3),
-    mean_vs=adjusted_vs,
-    variance_vs=posterior_variance,
+    prior_mean=prior_mean,
+    prior_variance=prior_variance,
+    observation=observation,
+    observation_variance=observation_variance,
     soil_saturation=soil_saturation,
-    confidence=confidence,
 )
 
-print("\nStored Tensor Cell")
-print("-" * 50)
+print(f"Updated Vs mean: {result['mean_vs']}")
 
 print(
-    store.get_cell((1, 2, 3))
+    f"Updated uncertainty: "
+    f"{result['variance_vs']}"
 )
+
+print(
+    f"Soil saturation: "
+    f"{result['soil_saturation']}"
+)
+
+print(
+    f"Belief confidence: "
+    f"{result['confidence']}"
+)
+
+# --------------------------------------------------
+# Memory-Mapped Storage
+# --------------------------------------------------
+
+print("\n")
+print("Memory-Mapped Storage")
+print("-" * 50)
+
+mapped_store = (
+    MemoryMappedBeliefStore(
+        path="belief_state.dat",
+        shape=(10, 10),
+    )
+)
+
+mapped_store.write(
+    (0, 0),
+    result,
+)
+
+stored_cell = mapped_store.read(
+    (0, 0)
+)
+
+print(stored_cell)
+
+# --------------------------------------------------
+# Regional Concurrent Update
+# --------------------------------------------------
+
+print("\n")
+print("Regional Concurrent Update")
+print("-" * 50)
+
+region_updater = RegionUpdater(
+    belief_store=mapped_store,
+    updater=manager.kalman_updater,
+)
+
+region_updater.update_region(
+    indices=[
+        (0, 0),
+    ],
+    observations=[
+        3.0,
+    ],
+    observation_variance=0.2,
+)
+
+updated_cell = mapped_store.read(
+    (0, 0)
+)
+
+print(updated_cell)

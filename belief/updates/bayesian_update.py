@@ -1,7 +1,12 @@
-class BayesianUpdater:
+from belief.updates.base_updater import (
+    BaseUpdater,
+)
 
-    @staticmethod
+
+class BayesianUpdater(BaseUpdater):
+
     def update(
+        self,
         prior_mean,
         prior_variance,
         observation,
@@ -10,9 +15,13 @@ class BayesianUpdater:
 
         posterior_mean = (
             (
-                observation_variance * prior_mean
+                observation_variance
+                *
+                prior_mean
                 +
-                prior_variance * observation
+                prior_variance
+                *
+                observation
             )
             /
             (

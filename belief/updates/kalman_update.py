@@ -1,21 +1,47 @@
-class KalmanUpdater:
+from belief.updates.base_updater import (
+    BaseUpdater,
+)
 
-    @staticmethod
-    def predict(
-        current_mean,
-        current_variance,
-        process_noise,
+
+class KalmanUpdater(BaseUpdater):
+
+    def update(
+        self,
+        prior_mean,
+        prior_variance,
+        observation,
+        observation_variance,
     ):
 
-        predicted_mean = current_mean
-
-        predicted_variance = (
-            current_variance
-            +
-            process_noise
+        kalman_gain = (
+            prior_variance
+            /
+            (
+                prior_variance
+                +
+                observation_variance
+            )
         )
 
+        posterior_mean = (
+            prior_mean
+            +
+            kalman_gain
+            *
+            (
+                observation
+                -
+                prior_mean
+            )
+        )
+
+        posterior_variance = (
+            1
+            -
+            kalman_gain
+        ) * prior_variance
+
         return (
-            predicted_mean,
-            predicted_variance,
+            posterior_mean,
+            posterior_variance,
         )
