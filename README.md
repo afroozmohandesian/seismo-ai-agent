@@ -89,12 +89,13 @@ seismo-ai-agent/
 
 # Scientific References
 
-Scientific papers used during architectural design and implementation are available in:
+The following papers were used during system design and architectural development:
 
-```text
-docs/references/
-```
-
+- [Near-Real-Time Integration of Multi-Source Seismic Data](docs/references/near_real_time_seismic_data_integration.pdf)
+- [A Survey on Epistemic Uncertainty in Supervised Learning](docs/references/epistemic_uncertainty_survey_2021.pdf)
+- [Ensemble Kalman Filter with Epistemic Uncertainty](docs/references/ensemble_kalman_epistemic_uncertainty_2024.pdf)
+- [Uncertainty Propagation in Seismic Inversion](docs/references/uncertainty_propagation_seismic_inversion_2024.pdf)
+- [Physics-Informed Deep Learning for Seismic Uncertainty](docs/references/pinn_uncertainty_hypocenter_determination_2025.pdf)
 ---
 
 # Installation
