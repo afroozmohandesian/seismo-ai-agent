@@ -8,3 +8,4 @@ __pycache__/
 .vscode/
 *.db
 *.log.DS_Store
+.DS_Store
