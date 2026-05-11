@@ -2,7 +2,7 @@ from belief.storage.tensor_store import (
     TensorStore,
 )
 
-from belief.belief_manager import (
+from belief.core.belief_manager import (
     BeliefManager,
 )
 
@@ -10,7 +10,7 @@ from belief.storage.memory_mapped_store import (
     MemoryMappedBeliefStore,
 )
 
-from belief.updates.region_updater import (
+from belief.concurrency.region_updater import (
     RegionUpdater,
 )
 
