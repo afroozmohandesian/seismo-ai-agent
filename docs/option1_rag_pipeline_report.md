@@ -172,6 +172,7 @@ Example:
     "bm25_score": 0.85,
     "hybrid_score": 0.88
 }
+```
 
 This improves explainability and ranking transparency.
 
@@ -187,6 +188,7 @@ Example:
 filters={
     "category": "marine"
 }
+```
 
 This restricts retrieval to marine-related seismic reports only.
 
