@@ -67,7 +67,7 @@ External Providers (USGS / EMSC)
         FastAPI
             ↓
       API Consumers
-
+```
 
 This separation of concerns improves:
 
