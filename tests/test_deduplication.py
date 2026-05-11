@@ -1,7 +1,7 @@
 from datetime import datetime
 from datetime import timezone
 
-from perception.deduplication import (
+from perception.deduplication.deduplication import (
     haversine_distance_km,
     are_potential_duplicates,
 )

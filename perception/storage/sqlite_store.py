@@ -2,7 +2,7 @@ import sqlite3
 
 from perception.models.event import SeismicEvent
 from shared.logger import logger
-from perception.deduplication import (
+from perception.deduplication.deduplication import (
     are_potential_duplicates,
 )
 
