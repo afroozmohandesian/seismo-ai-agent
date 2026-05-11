@@ -2,7 +2,7 @@ from rag.filtering.metadata_filter import (
     MetadataFilter,
 )
 
-from rag.retrieval.completeness import (
+from rag.evaluation.completeness import (
     RetrievalCompleteness,
 )
 
