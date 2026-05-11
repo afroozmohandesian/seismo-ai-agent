@@ -127,6 +127,8 @@ Original Query:
 
 ```text
 Show tsunami activity near Greece
+```
+may expand into related concepts such as:
 
 - offshore seismic activity,
 - marine hazard,
