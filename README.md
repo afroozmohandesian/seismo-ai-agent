@@ -10,6 +10,25 @@ A modular AI-driven seismic analysis platform for:
 The project was developed as part of an advanced AI software engineering technical assessment focused on scalable AI systems, scientific-computing architectures, probabilistic reasoning, and geophysical data processing.
 
 ---
+---
+
+# System Overview
+
+The platform is organized into three independent subsystems:
+
+- **Perception Layer** for near-real-time seismic ingestion,
+  synchronization, validation, and scientific deduplication.
+
+- **Hybrid RAG Layer** for semantic retrieval,
+  metadata-aware filtering, and retrieval completeness evaluation.
+
+- **BELIEF Layer** for probabilistic state propagation,
+  uncertainty-aware scientific computing, and scalable tensor-based storage.
+
+The architecture emphasizes modularity, extensibility,
+low-latency execution, and maintainable scientific AI workflows.
+
+---
 
 # Repository
 
@@ -85,6 +104,7 @@ seismo-ai-agent/
 
 - [System Architecture Diagram](diagram/Option2_diagram.png)
 
+diagram/Option2_diagram.png
 ---
 
 # Scientific References
