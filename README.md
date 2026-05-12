@@ -101,9 +101,9 @@ seismo-ai-agent/
 
 ### Architecture Diagram
 
-- [System Architecture Diagram](diagram/Option2_diagram.png)
+- [System Architecture Diagram](docs/diagram/Option2_diagram.png)
 
-![BELIEF System Architecture Diagram](diagram/Option2_diagram.png)
+![BELIEF System Architecture Diagram](docs/diagram/Option2_diagram.png)
 ---
 
 # Scientific References
