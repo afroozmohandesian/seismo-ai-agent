@@ -33,10 +33,13 @@ class USGSFetcher:
         events = []
         state_manager = SyncStateManager()
 
-        last_event_time = (
-            state_manager.get_last_event_time()
+        last_event_time = max(
+            state_manager.get_last_event_time() or 0,
+            0
         )
-
+        logger.info(
+            f"Last synced event time: {last_event_time}"
+        )
         latest_seen_time = last_event_time
 
         for feature in payload["features"]:
@@ -60,8 +63,7 @@ class USGSFetcher:
                     lon=coordinates[0],
                     lat=coordinates[1],
 
-                    depth=-abs(coordinates[2]),
-
+                    depth=max(-100.0, -abs(coordinates[2])),
                     Mw=properties["mag"] or 0.0,
 
                     dist=0.0,
