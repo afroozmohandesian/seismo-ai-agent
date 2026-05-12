@@ -10,7 +10,6 @@ A modular AI-driven seismic analysis platform for:
 The project was developed as part of an advanced AI software engineering technical assessment focused on scalable AI systems, scientific-computing architectures, probabilistic reasoning, and geophysical data processing.
 
 ---
----
 
 # System Overview
 
@@ -104,7 +103,7 @@ seismo-ai-agent/
 
 - [System Architecture Diagram](diagram/Option2_diagram.png)
 
-diagram/Option2_diagram.png
+![BELIEF System Architecture Diagram](diagram/Option2_diagram.png)
 ---
 
 # Scientific References
